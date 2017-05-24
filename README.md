@@ -1,14 +1,22 @@
 # Tournament Results
 
-Full Stack Nanodegree Program Project 4. Tasked with creating a database schema based on Postgres SQL and Python. Languages used in this were Python 2.7 and SQL.
+Full Stack Nanodegree Program Project #4. Tasked with creating a database schema based on Postgres SQL and Python. Languages used in this were Python 2.7 and SQL.
 
 ## Getting Started
 
 Clone this repository by typing `git clone https://github.com/bryancresswell/tournamentResults.git`
 
+## Launching Vagrant
+
+Once you have installed [Vagrant](vagrantup.com), clone the Full Stack Nanodegree files from [here](https://github.com/udacity/fullstack-nanodegree-vm). Once done, navigate to the folder, then type `vagrant up`. Once ready, type `vagrant ssh` which will connect you to the VM.
+
+# Setting up the database
+
+Once you are connected in the VM, you should see `vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$`. This will be where you enter your commands. To quickly set up the database, just type `psql -f tournament.sql`. This will automatically create the "tournament" database.
+
 ## Testing
 
-To test the app, simply connect to the vagrant machine by first typing `vagrant up`, then `vagrant ssh`. Navigate to your \vagrant directory with `cd \vagrant`. Once done, set up the database by first typing `psql`, then `\i tournament.sql`. After which, type `python tournament.py` which will show you the output and results of the test.
+Once the database is created (which you can check by using `\dt` in the `psql` shell), you are all ready to test the app! To test, type `python tournament_test.py` which will show you the output and results of the test.
 
 ## Lessons Learnt
 

@@ -129,13 +129,17 @@ def swissPairings():
     table = "players"                                                                       
     c.execute("""SELECT playerID,                                                           
         playerName FROM %s ORDER BY wins DESC;""" % (table,))                               
-    result = c.fetchall()                                                                   
-    pairings = list()                                                                       
+    result = c.fetchall()
+    pairings = list()
+    if (result % 2 != 0):
+        return None
+    else:                                                                   
     # For loop to simply pair up adjacent players based on                                  
     # already sorted value from the playerStandings() method                                
-    for i in range(0, len(result), 2):                                                      
-        tmpList = result[i:i+2]                                                             
-        temp1 = tmpList[0]                                                                  
-        temp2 = tmpList[1]                                                                  
-        pairings.append((temp1[0], temp1[1], temp2[0], temp2[1]))                           
-    return pairings    
+        for i in range(0, len(result), 2):                                                      
+            tmpList = result[i:i+2]                                                             
+            temp1 = tmpList[0]                                                                  
+            temp2 = tmpList[1]                                                                  
+            pairings.append((temp1[0], temp1[1], temp2[0], temp2[1]))                           
+        return pairings   
+    return None 
