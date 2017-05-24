@@ -10,9 +10,9 @@ Clone this repository by typing `git clone https://github.com/bryancresswell/tou
 
 Once you have installed [Vagrant](vagrantup.com), clone the Full Stack Nanodegree files from [here](https://github.com/udacity/fullstack-nanodegree-vm). Once done, navigate to the folder, then type `vagrant up`. Once ready, type `vagrant ssh` which will connect you to the VM.
 
-# Setting up the database
+## Setting up the database
 
-Once you are connected in the VM, you should see `vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$`. This will be where you enter your commands. To quickly set up the database, just type `psql -f tournament.sql`. This will automatically create the "tournament" database.
+Once you are connected in the VM, type `cd /vagrant` to change to the current directory. You should see `vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$`. This will be where you enter your commands. To quickly set up the database, just type `psql -f tournament.sql`. This will automatically create the "tournament" database.
 
 ## Testing
 
