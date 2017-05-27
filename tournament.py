@@ -11,18 +11,19 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament")
 
-
 def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     c = conn.cursor()
     table = "matches"
+    queryMatches = "DELETE FROM %s" % (table, )
     playerTable = "players"
-    c.execute("DELETE FROM %s;" % (table,))
+    queryPlayer = """UPDATE %s SET wins = 0,
+                    loss = 0, matchesPlayed = 0""" % (playerTable,)
+    c.execute(queryMatches)
     # UPDATE statement is to reset all values to default after deleting all
     # rows from matches table
-    c.execute("""UPDATE %s SET wins = 0, 
-        loss = 0, matchesPlayed = 0""" % (playerTable,))
+    c.execute(queryPlayer)
     conn.commit()
     conn.close()
 
@@ -31,7 +32,8 @@ def deletePlayers():
     conn = connect()
     table = "players"
     c = conn.cursor()
-    c.execute("DELETE FROM %s;" % (table,))
+    queryDelete = "DELETE FROM %s;" % (table,)
+    c.execute(queryDelete)
     conn.commit()
     conn.close()
 
@@ -40,7 +42,8 @@ def countPlayers():
     conn = connect()
     table = "players"
     c = conn.cursor()
-    c.execute("SELECT COUNT(playerID) FROM %s;" % (table,))
+    queryCount = "SELECT COUNT(playerID) FROM %s;" % (table,)
+    c.execute(queryCount)
     result = c.fetchone()[0]
     conn.commit()
     conn.close()
@@ -57,9 +60,10 @@ def registerPlayer(name):
     conn = connect()                                                                        
     c = conn.cursor()                                                                       
     # Regex is used here for instances where we might have apostrophes in one's             
-    # name                                                                                  
-    c.execute("INSERT INTO players (playerName) VALUES ('{}')".format(                      
-        re.sub(r'\'', '', name)));                                                          
+    # name      
+    queryRegister = "INSERT INTO players (playerName) VALUES ('{}')".format(
+        re.sub(r'\'', '', name))                                                                            
+    c.execute(queryRegister)                                                          
     conn.commit()                                                                           
     conn.close()                                                                            
                                                                                             
@@ -78,11 +82,12 @@ def playerStandings():
     """                                                                                     
     conn = connect()                                                                        
     c = conn.cursor()                                                                       
-    table = "players"                                                                       
-    c.execute("""SELECT playerID,                                                           
+    table = "players"  
+    queryStandings = """SELECT playerID,                                                           
         playerName,                                                                         
         wins,                                                                               
-        matchesPlayed FROM %s ORDER BY wins DESC;""" % (table,))                            
+        matchesPlayed FROM %s ORDER BY wins DESC;""" % (table,)                                                                     
+    c.execute(queryStandings)                            
     result = c.fetchall()                                                                   
     conn.commit()                                                                           
     conn.close()                                                                            
@@ -97,15 +102,18 @@ def reportMatch(winner, loser):
     """                                                                                     
     conn = connect()                                                                        
     c = conn.cursor()                                                                       
-    # Inserts a row into the matches table, and updates subsequent data                     
-    c.execute("""INSERT INTO matches (winner, loser)                                        
-        VALUES ('%i', '%i')""" % (winner, loser))                                           
-    c.execute("""UPDATE players SET wins = wins + 1,                                        
+    # Inserts a row into the matches table, and updates subsequent data 
+    queryReportInsert = """INSERT INTO matches (winner, loser)                                        
+        VALUES ('%i', '%i')""" % (winner, loser)                    
+    c.execute(queryReportInsert)
+    queryReportUpdate = """UPDATE players SET wins = wins + 1,                                        
         matchesPlayed = matchesPlayed + 1                                                   
-        WHERE playerID = %s""" % (winner,))                                                 
-    c.execute("""UPDATE players SET loss = loss + 1,                                        
+        WHERE playerID = %s""" % (winner,)                                          
+    c.execute(queryReportUpdate)  
+    queryReportUpdate1 = """UPDATE players SET loss = loss + 1,                                        
         matchesPlayed = matchesPlayed + 1                                                   
-        WHERE playerID = %s""" % (loser,))                                                  
+        WHERE playerID = %s""" % (loser,)                                               
+    c.execute(queryReportUpdate1)                                                  
     conn.commit()                                                                           
     conn.close()                                                                            
                                                                                             
@@ -126,9 +134,10 @@ def swissPairings():
     """                                                                                     
     conn = connect()                                                                        
     c = conn.cursor()                                                                       
-    table = "players"                                                                       
-    c.execute("""SELECT playerID,                                                           
-        playerName FROM %s ORDER BY wins DESC;""" % (table,))                               
+    table = "players" 
+    querySwiss = """SELECT playerID,                                                           
+        playerName FROM %s ORDER BY wins DESC;""" % (table,)                                                                       
+    c.execute(querySwiss)                               
     result = c.fetchall()
     pairings = list()
     if (result % 2 != 0):
